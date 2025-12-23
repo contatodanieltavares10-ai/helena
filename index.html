@@ -35,16 +35,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        #mobile-menu { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); max-height: 0; opacity: 0; visibility: hidden; transform: translateY(-20px); overflow: hidden; }
-        #mobile-menu.open { max-height: 500px; opacity: 1; visibility: visible; transform: translateY(0); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .hamburger line { transition: transform 0.3s ease, opacity 0.3s ease; transform-origin: center; }
-        .hamburger.active line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-        .hamburger.active line:nth-child(2) { opacity: 0; transform: translateX(-10px); }
-        .hamburger.active line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-        .testimonial-card { transition: transform 0.3s ease; }
-        .testimonial-card:hover { transform: translateY(-5px); }
+        
+        /* Animações de Scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- MENU MOBILE --- */
+        #mobile-menu {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px);
+            overflow: hidden;
+        }
+
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animação do Ícone Sanduíche */
+        .hamburger line {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform-origin: center;
+        }
+        .hamburger.active line:nth-child(1) {
+            transform: translateY(6px) rotate(45deg);
+        }
+        .hamburger.active line:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+        .hamburger.active line:nth-child(3) {
+            transform: translateY(-6px) rotate(-45deg);
+        }
+
+        /* Estilos do Slider de Depoimentos */
+        .testimonial-card {
+            transition: transform 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+        }
     </style>
 </head>
 <body class="bg-white text-secondary">
@@ -61,13 +104,17 @@
                 </div>
                 <span class="text-xl md:text-2xl font-bold text-secondary tracking-tight">Dra. Elena <span class="text-primary">Silva</span></span>
             </a>
+
             <div class="hidden md:flex gap-8 text-secondary font-medium items-center">
-                <a href="#" class="hover:text-primary transition relative group">Início</a>
-                <a href="#servicos" class="hover:text-primary transition relative group">Especialidades</a>
-                <a href="#sobre" class="hover:text-primary transition relative group">Sobre</a>
-                <a href="#depoimentos" class="hover:text-primary transition relative group">Depoimentos</a>
-                <a href="#contato" class="bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-primaryDark transition shadow-md">Agendar Consulta</a>
+                <a href="#" class="hover:text-primary transition relative group">Início<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span></a>
+                <a href="#servicos" class="hover:text-primary transition relative group">Especialidades<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span></a>
+                <a href="#sobre" class="hover:text-primary transition relative group">Sobre<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span></a>
+                <a href="#depoimentos" class="hover:text-primary transition relative group">Depoimentos<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span></a>
+                <a href="#contato" class="bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-primaryDark transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200 font-medium">
+                    Agendar Consulta
+                </a>
             </div>
+
             <button id="menu-btn" class="md:hidden text-secondary focus:outline-none p-2 rounded-md hover:bg-gray-100 transition">
                 <svg class="w-8 h-8 hamburger" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <line x1="4" y1="6" x2="20" y2="6" />
@@ -76,32 +123,386 @@
                 </svg>
             </button>
         </div>
+
         <div id="mobile-menu" class="absolute top-full left-0 w-full bg-white border-t border-gray-100 md:hidden z-40">
             <div class="flex flex-col p-6 gap-4 text-center font-medium">
-                <a href="#" class="hover:text-primary py-3 block mobile-link border-b">Início</a>
-                <a href="#servicos" class="hover:text-primary py-3 block mobile-link border-b">Especialidades</a>
-                <a href="#sobre" class="hover:text-primary py-3 block mobile-link border-b">Sobre</a>
-                <a href="#depoimentos" class="hover:text-primary py-3 block mobile-link border-b">Depoimentos</a>
-                <a href="#contato" class="bg-primary text-white px-6 py-4 rounded-lg mt-4 shadow-lg">Agendar Consulta</a>
+                <a href="#" class="hover:text-primary py-3 block mobile-link border-b border-gray-50">Início</a>
+                <a href="#servicos" class="hover:text-primary py-3 block mobile-link border-b border-gray-50">Especialidades</a>
+                <a href="#sobre" class="hover:text-primary py-3 block mobile-link border-b border-gray-50">Sobre</a>
+                <a href="#depoimentos" class="hover:text-primary py-3 block mobile-link border-b border-gray-50">Depoimentos</a>
+                <a href="#contato" class="bg-primary text-white px-6 py-4 rounded-lg hover:bg-primaryDark transition mt-4 mobile-link shadow-lg">
+                    Agendar Consulta
+                </a>
             </div>
         </div>
     </nav>
 
+    <header class="bg-silver pt-32 pb-16 md:pb-24 overflow-hidden">
+        <div class="container mx-auto px-6 flex flex-col-reverse md:flex-row items-center gap-12">
+            <div class="md:w-1/2 space-y-6 reveal text-center md:text-left">
+                <h1 class="text-4xl md:text-6xl font-bold text-secondary leading-tight">
+                    Lições e insights para uma <span class="text-primary relative inline-block">vida equilibrada
+                        <svg class="absolute w-full h-3 -bottom-1 left-0 text-green-200 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                            <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" />
+                        </svg>
+                    </span>
+                </h1>
+                <p class="text-gray text-lg leading-relaxed">
+                    Um espaço seguro para você se reconectar consigo mesmo. Terapia baseada em evidências para ansiedade, autoconhecimento e desenvolvimento pessoal.
+                </p>
+                <button class="bg-primary text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-primaryDark transition mt-4 shadow-lg hover:shadow-xl hover:-translate-y-1 duration-300">
+                    Marcar Primeira Sessão
+                </button>
+            </div>
+            <div class="md:w-1/2 flex justify-center relative reveal delay-200">
+                <div class="absolute w-72 h-72 bg-green-200 rounded-full blur-3xl opacity-30 -z-10 animate-pulse"></div>
+                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop" alt="Dra. Elena Silva" class="rounded-2xl shadow-2xl w-full max-w-md object-cover animate-float border-4 border-white">
+            </div>
+        </div>
+    </header>
+
+    <section id="servicos" class="py-16 md:py-20 bg-white">
+        <div class="container mx-auto px-6 grid md:grid-cols-3 gap-8 text-center">
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-transparent hover:border-primary group hover:-translate-y-2 reveal delay-100">
+                <div class="w-16 h-16 bg-green-50 rounded-tl-2xl rounded-br-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition-colors duration-300">
+                    <svg class="w-8 h-8 text-primary group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-secondary mb-2">Terapia Individual</h3>
+                <p class="text-gray text-sm">Sessões focadas nas suas questões pessoais, ansiedade, carreira e relacionamentos.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-transparent hover:border-primary group hover:-translate-y-2 reveal delay-200">
+                <div class="w-16 h-16 bg-green-50 rounded-tl-2xl rounded-br-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition-colors duration-300">
+                    <svg class="w-8 h-8 text-primary group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-secondary mb-2">Atendimento Online</h3>
+                <p class="text-gray text-sm">Realize sua terapia do conforto da sua casa, através de videochamadas seguras e criptografadas.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-transparent hover:border-primary group hover:-translate-y-2 reveal delay-300">
+                <div class="w-16 h-16 bg-green-50 rounded-tl-2xl rounded-br-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition-colors duration-300">
+                    <svg class="w-8 h-8 text-primary group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-secondary mb-2">Terapia de Casal</h3>
+                <p class="text-gray text-sm">Espaço de mediação para melhorar a comunicação e fortalecer vínculos afetivos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="sobre" class="py-16 md:py-20 bg-white">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2 reveal">
+                <div class="relative">
+                    <div class="absolute -top-4 -left-4 w-full h-full border-2 border-primary rounded-lg z-0"></div>
+                    <img src="https://images.unsplash.com/photo-1527689368864-3a821dbccc34?q=80&w=1000&auto=format&fit=crop" alt="Consultório" class="rounded-lg shadow-lg relative z-10 w-full hover:scale-[1.01] transition duration-500">
+                </div>
+            </div>
+            <div class="md:w-1/2 reveal delay-200">
+                <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4 leading-tight">O invisível que molda <br><span class="text-primary">sua realidade</span></h2>
+                <p class="text-gray mb-6 leading-relaxed">
+                    Muitas vezes, padrões de comportamento inconscientes ditam nossas escolhas. A psicoterapia é o processo de trazer luz a esses padrões, permitindo que você retome o controle da sua própria narrativa.
+                </p>
+                <p class="text-gray mb-8 leading-relaxed">
+                    Com mais de 8 anos de experiência clínica, ofereço um ambiente livre de julgamentos, onde sua história é ouvida com respeito profundo e técnica apurada.
+                </p>
+                <button class="border-2 border-primary text-primary px-8 py-3 rounded-lg font-bold hover:bg-primary hover:text-white transition duration-300">
+                    Conheça a Metodologia
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-silver overflow-hidden" id="stats-section">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12">
+            <div class="md:w-1/3 reveal">
+                <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4">Ajudando pessoas a<br><span class="text-primary">se reinventarem</span></h2>
+                <p class="text-gray text-lg">Nossa dedicação é medida pelo impacto positivo e bem-estar gerado em cada paciente atendido ao longo dos anos.</p>
+            </div>
+            
+            <div class="md:w-2/3 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-y-10 gap-x-8">
+                <div class="flex items-center gap-4 reveal delay-100 group">
+                    <div class="p-3 bg-white rounded-full shadow-sm group-hover:scale-110 transition duration-300">
+                        <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl font-bold text-secondary flex items-baseline"><span class="counter" data-target="850">0</span>+</h4>
+                        <p class="text-gray text-sm font-medium">Pacientes Atendidos</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4 reveal delay-200 group">
+                    <div class="p-3 bg-white rounded-full shadow-sm group-hover:scale-110 transition duration-300">
+                        <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl font-bold text-secondary flex items-baseline"><span class="counter" data-target="5000">0</span>+</h4>
+                        <p class="text-gray text-sm font-medium">Horas de Clínica</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 reveal delay-300 group">
+                    <div class="p-3 bg-white rounded-full shadow-sm group-hover:scale-110 transition duration-300">
+                        <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl font-bold text-secondary flex items-baseline"><span class="counter" data-target="98">0</span>%</h4>
+                        <p class="text-gray text-sm font-medium">Satisfação</p>
+                    </div>
+                </div>
+
+                 <div class="flex items-center gap-4 reveal delay-400 group">
+                    <div class="p-3 bg-white rounded-full shadow-sm group-hover:scale-110 transition duration-300">
+                        <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl font-bold text-secondary flex items-baseline"><span class="counter" data-target="2">0</span></h4>
+                        <p class="text-gray text-sm font-medium">Consultórios</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-12 md:gap-16">
+            <div class="md:w-1/2 flex justify-center reveal">
+                 <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1000&auto=format&fit=crop" alt="Agendamento Online" class="rounded-2xl shadow-2xl max-w-sm w-full hover:scale-105 transition duration-500">
+            </div>
+            <div class="md:w-1/2 reveal delay-200">
+                <h2 class="text-3xl font-bold text-secondary mb-4">Como funciona o <br>agendamento online?</h2>
+                <p class="text-gray mb-6">
+                    A tecnologia facilita o acesso à saúde mental. Nosso sistema de agendamento é simples, rápido e discreto. Você escolhe o horário, recebe o link da sala virtual e inicia seu processo.
+                </p>
+                <div class="space-y-3 mb-8">
+                    <div class="flex items-center gap-3 text-gray-600">
+                        <div class="w-2 h-2 rounded-full bg-primary"></div><span>Sigilo Absoluto</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-gray-600">
+                         <div class="w-2 h-2 rounded-full bg-primary"></div><span>Plataforma Criptografada</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-gray-600">
+                         <div class="w-2 h-2 rounded-full bg-primary"></div><span>Horários Flexíveis</span>
+                    </div>
+                </div>
+                <button class="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primaryDark transition shadow-md">
+                    Ver Horários Disponíveis
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="depoimentos" class="py-20 bg-silver reveal">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-secondary mb-2">Relatos de quem já passou por aqui</h2>
+                <p class="text-gray">Histórias reais de transformação e autoconhecimento.</p>
+            </div>
+
+            <div class="relative overflow-hidden w-full max-w-6xl mx-auto">
+                <div id="slider-track" class="flex transition-transform duration-700 ease-in-out">
+                    
+                    <div class="w-full md:w-1/3 flex-shrink-0 px-4">
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full flex flex-col justify-between testimonial-card">
+                            <div>
+                                <div class="flex text-yellow-400 mb-4">★★★★★</div>
+                                <p class="text-gray italic mb-6">"Cheguei ao consultório com crises de ansiedade que me impediam de trabalhar. Em poucos meses, com as técnicas da TCC, consegui retomar minha rotina."</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop" class="w-12 h-12 rounded-full object-cover border-2 border-primary" alt="João M.">
+                                <div>
+                                    <h5 class="font-bold text-secondary text-sm">João Mendes</h5>
+                                    <p class="text-gray-400 text-xs">Empresário</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-1/3 flex-shrink-0 px-4">
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full flex flex-col justify-between testimonial-card">
+                            <div>
+                                <div class="flex text-yellow-400 mb-4">★★★★★</div>
+                                <p class="text-gray italic mb-6">"A Dra. Elena foi fundamental no meu processo de divórcio. O acolhimento e a clareza que ela traz para as sessões me ajudaram a reconstruir minha autoestima."</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop" class="w-12 h-12 rounded-full object-cover border-2 border-primary" alt="Beatriz S.">
+                                <div>
+                                    <h5 class="font-bold text-secondary text-sm">Beatriz Souza</h5>
+                                    <p class="text-gray-400 text-xs">Arquiteta</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-1/3 flex-shrink-0 px-4">
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full flex flex-col justify-between testimonial-card">
+                            <div>
+                                <div class="flex text-yellow-400 mb-4">★★★★★</div>
+                                <p class="text-gray italic mb-6">"Nunca acreditei muito em terapia online, mas a praticidade e a conexão que criei com a doutora me surpreenderam. É o momento mais importante da minha semana."</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop" class="w-12 h-12 rounded-full object-cover border-2 border-primary" alt="Carlos P.">
+                                <div>
+                                    <h5 class="font-bold text-secondary text-sm">Carlos Pereira</h5>
+                                    <p class="text-gray-400 text-xs">Dev Senior</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center gap-2 mt-8" id="slider-dots"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-secondary text-white py-16 mt-0">
+        <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
+            <div class="reveal">
+                <div class="flex items-center gap-2 mb-4">
+                     <div class="p-1 bg-white/10 rounded-full">
+                        <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    </div>
+                    <span class="text-xl font-bold">Dra. Elena Silva</span>
+                </div>
+                <p class="text-gray-400 text-sm">CRP 06/12345<br>Psicologia Clínica e Bem-estar.</p>
+            </div>
+            
+            <div class="reveal delay-100">
+                <h5 class="font-bold mb-4">Links Rápidos</h5>
+                <ul class="text-gray-400 space-y-2 text-sm">
+                    <li><a href="#sobre" class="hover:text-primary transition">Sobre a Dra. Elena</a></li>
+                    <li><a href="#servicos" class="hover:text-primary transition">Especialidades</a></li>
+                    <li><a href="#" class="hover:text-primary transition">Perguntas Frequentes</a></li>
+                </ul>
+            </div>
+            
+            <div class="reveal delay-200">
+                <h5 class="font-bold mb-4">Legal</h5>
+                <ul class="text-gray-400 space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white">Aviso Legal</a></li>
+                    <li><a href="#" class="hover:text-white">Política de Privacidade</a></li>
+                </ul>
+            </div>
+            
+            <div class="reveal delay-300">
+                <h5 class="font-bold mb-4">Agende sua sessão</h5>
+                <p class="text-gray-400 text-sm mb-4">Receba novidades e conteúdos exclusivos sobre saúde mental.</p>
+                <div class="relative">
+                    <input type="email" placeholder="Seu melhor email" class="bg-gray-700 text-white px-4 py-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                    <button class="absolute right-2 top-2 bottom-2 px-3 bg-primary rounded hover:bg-primaryDark transition text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-6 mt-12 pt-8 border-t border-gray-700 text-center text-gray-500 text-xs">
+            &copy; 2024 Dra. Elena Silva. Todos os direitos reservados.
+        </div>
+    </footer>
+
     <script>
+        // 1. MENU MOBILE
         const btn = document.getElementById('menu-btn');
         const menu = document.getElementById('mobile-menu');
         const hamburgerIcon = document.querySelector('.hamburger');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             menu.classList.toggle('open');
             hamburgerIcon.classList.toggle('active');
         });
+
+        document.addEventListener('click', (e) => {
+            if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.remove('open');
+                hamburgerIcon.classList.remove('active');
+            }
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('open');
+                hamburgerIcon.classList.remove('active');
+            });
+        });
+
+        // 2. SCROLL REVEAL
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    if (entry.target.querySelector('.counter')) {
+                        startCounters();
+                    }
+                }
             });
-        }, { threshold: 0.15 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 3. CONTADORES NUMÉRICOS
+        let countersStarted = false;
+
+        function startCounters() {
+            if (countersStarted) return;
+            countersStarted = true;
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.innerText = Math.ceil(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCounter();
+            });
+        }
+
+        // 4. SLIDER DE DEPOIMENTOS
+        const track = document.getElementById('slider-track');
+        const testimonialCount = 3; 
+        let currentIndex = 0;
+        
+        function getVisibleSlides() {
+            return window.innerWidth >= 768 ? 3 : 1;
+        }
+
+        function updateSlider() {
+            const visibleSlides = getVisibleSlides();
+            const slideWidth = 100 / visibleSlides;
+            track.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
+        }
+
+        // Simples auto-play
+        setInterval(() => {
+            const visibleSlides = getVisibleSlides();
+            if (currentIndex >= testimonialCount - visibleSlides) {
+                currentIndex = 0;
+            } else {
+                currentIndex++;
+            }
+            updateSlider();
+        }, 5000);
+
+        window.addEventListener('resize', () => {
+            currentIndex = 0;
+            updateSlider();
+        });
     </script>
 
     <script type="text/javascript">
