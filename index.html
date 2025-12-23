@@ -101,6 +101,16 @@
                 </svg>
             </button>
         </div>
+        
+        <div id="mobile-menu" class="absolute top-full left-0 w-full bg-white border-t border-gray-100 md:hidden z-40">
+            <div class="flex flex-col p-6 gap-4 text-center font-medium">
+                <a href="#" class="hover:text-primary py-3 block mobile-link">Início</a>
+                <a href="#servicos" class="hover:text-primary py-3 block mobile-link">Especialidades</a>
+                <a href="#sobre" class="hover:text-primary py-3 block mobile-link">Sobre</a>
+                <a href="#depoimentos" class="hover:text-primary py-3 block mobile-link">Depoimentos</a>
+                <a href="#contato" class="bg-primary text-white px-6 py-4 rounded-lg mt-4 block">Agendar Consulta</a>
+            </div>
+        </div>
     </nav>
 
     <header class="bg-silver pt-32 pb-16 md:pb-24 overflow-hidden">
@@ -109,57 +119,154 @@
                 <h1 class="text-4xl md:text-6xl font-bold text-secondary leading-tight">
                     Lições e insights para uma <span class="text-primary relative inline-block">vida equilibrada</span>
                 </h1>
-                <p class="text-gray text-lg">Um espaço seguro para você se reconectar consigo mesmo. Terapia baseada em evidências.</p>
+                <p class="text-gray text-lg">Um espaço seguro para você se reconectar consigo mesmo. Terapia baseada em evidências para ansiedade e autoconhecimento.</p>
                 <button class="bg-primary text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-primaryDark transition shadow-lg">Marcar Primeira Sessão</button>
             </div>
             <div class="md:w-1/2 flex justify-center relative reveal delay-200">
-                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop" alt="Dra. Elena Silva" class="rounded-2xl shadow-2xl w-full max-w-md animate-float">
+                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop" alt="Dra. Elena Silva" class="rounded-2xl shadow-2xl w-full max-w-md animate-float border-4 border-white">
             </div>
         </div>
     </header>
 
-    <section id="servicos" class="py-16 bg-white">
+    <section id="servicos" class="py-16 md:py-20 bg-white">
         <div class="container mx-auto px-6 grid md:grid-cols-3 gap-8 text-center">
-            <div class="bg-white p-8 rounded-2xl shadow-lg reveal">
-                <h3 class="text-2xl font-bold mb-2">Terapia Individual</h3>
-                <p class="text-gray text-sm">Sessões focadas nas suas questões pessoais e ansiedade.</p>
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition border-b-4 border-transparent hover:border-primary reveal">
+                <h3 class="text-2xl font-bold text-secondary mb-2">Terapia Individual</h3>
+                <p class="text-gray text-sm">Sessões focadas nas suas questões pessoais e desenvolvimento.</p>
             </div>
-            <div class="bg-white p-8 rounded-2xl shadow-lg reveal delay-100">
-                <h3 class="text-2xl font-bold mb-2">Atendimento Online</h3>
-                <p class="text-gray text-sm">Terapia do conforto da sua casa via videochamada.</p>
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition border-b-4 border-transparent hover:border-primary reveal delay-100">
+                <h3 class="text-2xl font-bold text-secondary mb-2">Atendimento Online</h3>
+                <p class="text-gray text-sm">Realize sua terapia do conforto da sua casa com segurança.</p>
             </div>
-            <div class="bg-white p-8 rounded-2xl shadow-lg reveal delay-200">
-                <h3 class="text-2xl font-bold mb-2">Terapia de Casal</h3>
-                <p class="text-gray text-sm">Melhoria da comunicação e fortalecimento de vínculos.</p>
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition border-b-4 border-transparent hover:border-primary reveal delay-200">
+                <h3 class="text-2xl font-bold text-secondary mb-2">Terapia de Casal</h3>
+                <p class="text-gray text-sm">Espaço para melhorar a comunicação e fortalecer vínculos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="sobre" class="py-16 md:py-20 bg-white">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2 reveal">
+                <img src="https://images.unsplash.com/photo-1527689368864-3a821dbccc34?q=80&w=1000&auto=format&fit=crop" alt="Consultório" class="rounded-lg shadow-lg w-full">
+            </div>
+            <div class="md:w-1/2 reveal delay-200">
+                <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4">O invisível que molda <span class="text-primary">sua realidade</span></h2>
+                <p class="text-gray mb-6 leading-relaxed">A psicoterapia é o processo de trazer luz a padrões inconscientes, permitindo que você retome o controle da sua própria narrativa.</p>
+                <p class="text-gray mb-8 leading-relaxed">Com mais de 8 anos de experiência, ofereço um ambiente livre de julgamentos e técnica apurada.</p>
+                <button class="border-2 border-primary text-primary px-8 py-3 rounded-lg font-bold hover:bg-primary hover:text-white transition">Conheça a Metodologia</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-silver" id="stats-section">
+        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div class="reveal">
+                <h4 class="text-4xl font-bold text-primary"><span class="counter" data-target="850">0</span>+</h4>
+                <p class="text-gray">Pacientes</p>
+            </div>
+            <div class="reveal delay-100">
+                <h4 class="text-4xl font-bold text-primary"><span class="counter" data-target="5000">0</span>+</h4>
+                <p class="text-gray">Horas de Clínica</p>
+            </div>
+            <div class="reveal delay-200">
+                <h4 class="text-4xl font-bold text-primary"><span class="counter" data-target="98">0</span>%</h4>
+                <p class="text-gray">Satisfação</p>
+            </div>
+            <div class="reveal delay-300">
+                <h4 class="text-4xl font-bold text-primary"><span class="counter" data-target="2">0</span></h4>
+                <p class="text-gray">Consultórios</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="depoimentos" class="py-20 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-12">Relatos de Transformação</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-8 bg-silver rounded-2xl testimonial-card reveal">
+                    <p class="italic text-gray mb-6">"Em poucos meses consegui retomar minha rotina de trabalho após crises de ansiedade."</p>
+                    <h5 class="font-bold">João Mendes</h5>
+                </div>
+                <div class="p-8 bg-silver rounded-2xl testimonial-card reveal delay-100">
+                    <p class="italic text-gray mb-6">"O acolhimento da Dra. Elena foi fundamental para reconstruir minha autoestima."</p>
+                    <h5 class="font-bold">Beatriz Souza</h5>
+                </div>
+                <div class="p-8 bg-silver rounded-2xl testimonial-card reveal delay-200">
+                    <p class="italic text-gray mb-6">"A praticidade da terapia online me surpreendeu. É o melhor momento da minha semana."</p>
+                    <h5 class="font-bold">Carlos Pereira</h5>
+                </div>
             </div>
         </div>
     </section>
 
     <footer class="bg-secondary text-white py-16">
-        <div class="container mx-auto px-6 text-center">
-            <p class="text-gray-400 text-sm">&copy; 2024 Dra. Elena Silva. CRP 06/12345. Todos os direitos reservados.</p>
+        <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
+            <div>
+                <h5 class="font-bold mb-4">Dra. Elena Silva</h5>
+                <p class="text-gray-400 text-sm">CRP 06/12345<br>Psicologia Clínica e Bem-estar.</p>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4">Links</h5>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li><a href="#sobre" class="hover:text-primary">Sobre</a></li>
+                    <li><a href="#servicos" class="hover:text-primary">Especialidades</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4">Legal</h5>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li><a href="#" class="hover:text-white">Privacidade</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4">Newsletter</h5>
+                <input type="email" placeholder="Seu email" class="bg-gray-700 text-white p-2 rounded w-full text-sm">
+            </div>
+        </div>
+        <div class="text-center mt-12 pt-8 border-t border-gray-700 text-gray-500 text-xs">
+            &copy; 2024 Dra. Elena Silva. Todos os direitos reservados.
         </div>
     </footer>
 
     <script>
-        // Menu Mobile Script
+        // Scripts de Interatividade
         const btn = document.getElementById('menu-btn');
         const menu = document.getElementById('mobile-menu');
         const hamburgerIcon = document.querySelector('.hamburger');
-        
-        btn?.addEventListener('click', () => {
+
+        btn.addEventListener('click', () => {
             menu.classList.toggle('open');
             hamburgerIcon.classList.toggle('active');
         });
 
-        // Scroll Reveal
+        // Scroll Reveal e Counters
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    if (entry.target.querySelector('.counter')) startCounters();
+                }
             });
         }, { threshold: 0.1 });
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        function startCounters() {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const update = () => {
+                    const c = +counter.innerText;
+                    const inc = target / 100;
+                    if (c < target) {
+                        counter.innerText = Math.ceil(c + inc);
+                        setTimeout(update, 20);
+                    } else counter.innerText = target;
+                };
+                update();
+            });
+        }
     </script>
 
     <script type="text/javascript">
