@@ -8,9 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = { theme: { extend: { colors: { primary: '#4CAF4F', secondary: '#263238' }, fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
-    </script>
     <style>body { background-color: #F8FAFC; }</style>
 </head>
 <body class="min-h-screen flex items-center justify-center px-4">
@@ -18,8 +15,8 @@
     <div class="bg-white w-full max-w-lg p-8 rounded-2xl shadow-xl border border-gray-100">
         
         <div class="flex items-center justify-between mb-8 border-b border-gray-100 pb-4">
-            <h2 class="text-2xl font-bold text-secondary">Editar Perfil</h2>
-            <a href="dashboard.html" class="text-gray-400 hover:text-primary transition flex items-center gap-1 text-sm font-bold">
+            <h2 class="text-2xl font-bold text-gray-800">Seu Perfil</h2>
+            <a href="dashboard.html" class="text-gray-400 hover:text-green-600 transition flex items-center gap-1 text-sm font-bold">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar
             </a>
         </div>
@@ -27,108 +24,105 @@
         <div class="space-y-6">
             <div class="flex flex-col items-center mb-6">
                 <div class="relative group cursor-pointer" onclick="document.getElementById('file-upload').click()">
-                    <img id="preview-img" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover border-4 border-gray-50 shadow-md transition group-hover:opacity-75">
-                    <div class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full border-2 border-white shadow-sm">
+                    <img id="preview-img" src="https://via.placeholder.com/150" class="w-32 h-32 rounded-full object-cover border-4 border-gray-50 shadow-md">
+                    <div class="absolute bottom-0 right-0 bg-green-500 text-white p-2 rounded-full border-2 border-white shadow-sm">
                         <i data-lucide="camera" class="w-5 h-5"></i>
                     </div>
                 </div>
-                <p class="text-xs text-gray-400 mt-3 font-medium">Clique na foto para alterar</p>
-                <input type="file" id="file-upload" accept="image/*" class="hidden" onchange="previewFile()">
+                <p class="text-xs text-gray-400 mt-3 font-medium">Toque para alterar a foto</p>
+                <input type="file" id="file-upload" accept="image/*" class="hidden" onchange="mostrarPreview(this)">
             </div>
 
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Nome Completo</label>
-                <input type="text" id="input-nome" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none font-medium" placeholder="Seu nome">
+                <input type="text" id="input-nome" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none font-medium">
             </div>
 
-            <div class="pt-4 flex gap-3">
-                <a href="dashboard.html" class="w-1/3 py-3 text-center text-gray-500 font-bold hover:bg-gray-50 rounded-xl transition">Cancelar</a>
-                <button onclick="salvarAlteracoes()" id="btn-save" class="w-2/3 bg-primary text-white py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-lg shadow-green-200">
-                    Salvar Tudo
-                </button>
-            </div>
+            <button onclick="salvar()" id="btn-save" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition shadow-lg shadow-green-200">
+                Salvar Alterações
+            </button>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
+        
         const SB_URL = 'https://qpgtvcjcpucqwobmfozv.supabase.co';
         const SB_KEY = 'sb_publishable_yEvcZWITTevvnElw6wwdRg_usqiJNwW';
         const supabase = window.supabase.createClient(SB_URL, SB_KEY);
 
-        let fileParaUpload = null;
+        let arquivo = null;
 
-        // 1. CARREGAR DADOS AO ABRIR
-        async function init() {
-            // Tenta pegar do cache local primeiro (mais rápido)
-            const cached = JSON.parse(localStorage.getItem('user_data') || '{}');
-            const { data: { session } } = await supabase.auth.getSession();
+        // 1. CARREGAR (Lê cache)
+        (function init() {
+            const cache = JSON.parse(localStorage.getItem('user_data') || '{}');
+            if(cache.nome) document.getElementById('input-nome').value = cache.nome;
+            if(cache.avatar) document.getElementById('preview-img').src = cache.avatar;
+        })();
 
-            let nomeAtual = cached.nome || "";
-            let fotoAtual = cached.avatar || "https://ui-avatars.com/api/?name=User&background=4CAF4F&color=fff";
-
-            if (session?.user?.user_metadata) {
-                nomeAtual = session.user.user_metadata.full_name || nomeAtual;
-                fotoAtual = session.user.user_metadata.avatar_url || fotoAtual;
-            }
-
-            document.getElementById('input-nome').value = nomeAtual;
-            document.getElementById('preview-img').src = fotoAtual;
-        }
-        init();
-
-        // 2. PREVIEW DA FOTO SELECIONADA
-        function previewFile() {
-            const file = document.getElementById('file-upload').files[0];
-            if (file) {
-                fileParaUpload = file;
-                document.getElementById('preview-img').src = URL.createObjectURL(file);
+        // 2. PREVIEW (Mostra foto antes de enviar)
+        window.mostrarPreview = function(input) {
+            if (input.files && input.files[0]) {
+                arquivo = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview-img').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // 3. SALVAR TUDO (UPLOAD + UPDATE)
-        async function salvarAlteracoes() {
+        // 3. SALVAR TUDO
+        window.salvar = async function() {
             const btn = document.getElementById('btn-save');
             const nome = document.getElementById('input-nome').value;
-            
+
             if(!nome) return alert("Digite seu nome!");
 
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin inline"></i> Salvando...`;
-            lucide.createIcons();
+            btn.innerText = "Salvando...";
 
             try {
-                let publicUrl = document.getElementById('preview-img').src;
+                let finalUrl = document.getElementById('preview-img').src;
 
-                // A. SE TIVER ARQUIVO NOVO, FAZ UPLOAD
-                if (fileParaUpload) {
-                    const fileName = `avatar_${Date.now()}`;
-                    const { data, error } = await supabase.storage.from('avatars').upload(fileName, fileParaUpload);
+                // A. UPLOAD (Se tiver arquivo novo)
+                if (arquivo) {
+                    const nomeArq = 'foto_' + Date.now();
                     
-                    if (error) throw error;
+                    // Envia para o bucket 'avatars'
+                    const { error } = await supabase.storage
+                        .from('avatars')
+                        .upload(nomeArq, arquivo);
+
+                    if (error) throw error; // Se der erro, avisa
 
                     // Pega o link público
-                    const urlData = supabase.storage.from('avatars').getPublicUrl(fileName);
-                    publicUrl = urlData.data.publicUrl;
+                    const { data } = supabase.storage
+                        .from('avatars')
+                        .getPublicUrl(nomeArq);
+                    
+                    finalUrl = data.publicUrl;
                 }
 
-                // B. ATUALIZA PERFIL NO SUPABASE
-                const { error: updateError } = await supabase.auth.updateUser({
-                    data: { full_name: nome, avatar_url: publicUrl }
+                // B. ATUALIZA USUÁRIO
+                const { error: errUpdate } = await supabase.auth.updateUser({
+                    data: { full_name: nome, avatar_url: finalUrl }
                 });
 
-                if (updateError) throw updateError;
+                if (errUpdate) throw errUpdate;
 
-                // C. ATUALIZA CACHE LOCAL (Para o dashboard ler instantâneo)
-                localStorage.setItem('user_data', JSON.stringify({ nome: nome, avatar: publicUrl }));
+                // C. ATUALIZA CACHE LOCAL
+                localStorage.setItem('user_data', JSON.stringify({
+                    nome: nome,
+                    avatar: finalUrl
+                }));
 
-                // D. SUCESSO
-                btn.innerHTML = "Salvo com Sucesso!";
+                btn.innerText = "Salvo!";
                 setTimeout(() => window.location.href = 'dashboard.html', 800);
 
-            } catch (erro) {
-                console.error(erro);
-                alert("Erro ao salvar: " + erro.message);
+            } catch (e) {
+                console.error(e);
+                alert("Erro ao salvar: " + e.message);
                 btn.disabled = false;
                 btn.innerText = "Tentar Novamente";
             }
