@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal do Paciente | Dra. Elena Silva</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <script>
         tailwind.config = {
             theme: {
@@ -20,106 +18,93 @@
             }
         }
     </script>
-    <style>
-        body { background-color: #F8FAFC; color: #1e293b; }
-        .modal { transition: opacity 0.3s ease; }
-        .hidden-modal { pointer-events: none; opacity: 0; }
-    </style>
+    <style> body { background-color: #F8FAFC; color: #1e293b; } </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex h-screen overflow-hidden bg-surface">
 
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="container mx-auto px-6 h-20 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-green-50 p-2.5 rounded-xl text-primary"><i data-lucide="flower-2" class="w-6 h-6"></i></div>
-                <div>
-                    <h1 class="font-bold text-secondary text-lg leading-none">Dra. Elena Silva</h1>
-                    <span class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Portal do Paciente</span>
-                </div>
-            </div>
+    <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
+        <div class="p-6 flex items-center gap-3">
+            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-primary"><i data-lucide="flower-2" class="w-5 h-5"></i></div>
+            <span class="font-bold text-secondary text-lg">Dra. Elena</span>
+        </div>
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 mt-2">Principal</p>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 bg-green-50 text-primary rounded-xl font-medium"><i data-lucide="layout-dashboard" class="w-5 h-5"></i>Visão Geral</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition"><i data-lucide="video" class="w-5 h-5"></i>Sessões</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition"><i data-lucide="folder-heart" class="w-5 h-5"></i>Materiais</a>
+            
+            <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 mt-6">Conta</p>
+            <a href="perfil.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition"><i data-lucide="user-cog" class="w-5 h-5"></i>Meu Perfil</a>
+        </nav>
+        <div class="p-4 border-t border-gray-100">
+            <button id="sidebar-logout" class="flex items-center w-full gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl font-medium transition"><i data-lucide="log-out" class="w-5 h-5"></i>Sair</button>
+        </div>
+    </aside>
 
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="bg-white border-b border-gray-200 h-20 flex items-center justify-between px-8">
+            <h2 class="text-xl font-bold text-secondary">Visão Geral</h2>
+            
             <div class="flex items-center gap-4">
-                <div class="hidden md:flex flex-col text-right cursor-pointer" onclick="abrirModal()">
-                    <span class="text-xs text-gray-400 font-bold uppercase">Bem-vindo</span>
-                    <span class="text-sm font-bold text-secondary truncate max-w-[150px]" id="display-name">Carregando...</span>
-                </div>
-                
-                <div onclick="abrirModal()" class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border-2 border-green-100 cursor-pointer hover:border-primary transition">
-                    <img id="display-avatar" src="https://ui-avatars.com/api/?name=User&background=random" class="w-full h-full object-cover">
-                </div>
-
-                <div class="h-8 w-px bg-gray-200 mx-2"></div>
-
-                <button id="btn-logout" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition" title="Sair do Sistema">
-                    <i data-lucide="log-out" class="w-5 h-5"></i>
-                </button>
+                <a href="perfil.html" class="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition cursor-pointer">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs text-gray-400 font-bold uppercase">Bem-vindo</p>
+                        <p class="text-sm font-bold text-secondary" id="user-name">Carregando...</p>
+                    </div>
+                    <img id="user-avatar" src="" class="w-10 h-10 rounded-full border-2 border-gray-100 object-cover bg-gray-200">
+                </a>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <main class="flex-grow container mx-auto px-6 py-10 space-y-8">
-        
-        <div id="profile-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden-modal modal">
-            <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all scale-100">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold text-secondary">Editar Perfil</h3>
-                    <button onclick="fecharModal()" class="text-gray-400 hover:text-red-500"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <main class="flex-1 overflow-y-auto p-8 space-y-8">
+            <div class="grid lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-secondary rounded-2xl p-8 text-white relative overflow-hidden shadow-xl group">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-xs font-bold uppercase border border-green-500/30">Ao Vivo</span>
+                        </div>
+                        <h2 class="text-3xl font-bold mb-2">Sessão de Terapia Online</h2>
+                        <p class="text-gray-300 mb-8 max-w-md">Sua sala segura está preparada. O ambiente é criptografado e confidencial.</p>
+                        <button class="bg-primary hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg transition transform hover:-translate-y-1">
+                            <i data-lucide="video" class="w-5 h-5"></i> Entrar na Sala
+                        </button>
+                    </div>
                 </div>
-                
-                <div class="space-y-4">
+
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Seu Nome Completo</label>
-                        <input type="text" id="input-name" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="Ex: Maria Silva">
+                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-4"><i data-lucide="activity" class="w-5 h-5"></i></div>
+                        <h3 class="font-bold text-lg text-gray-800">Jornada</h3>
+                        <p class="text-gray-500 text-sm mt-1">Você completou 4 sessões este mês.</p>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Link da Foto (URL)</label>
-                        <input type="text" id="input-avatar" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="https://...">
-                        <p class="text-xs text-gray-400 mt-1">Cole um link de imagem ou deixe vazio para usar as iniciais.</p>
-                    </div>
-                    <button onclick="salvarPerfil()" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-green-600 transition">
-                        Salvar Alterações
-                    </button>
+                    <div class="w-full bg-gray-100 rounded-full h-2 mt-4"><div class="bg-blue-500 h-2 rounded-full" style="width: 75%"></div></div>
                 </div>
             </div>
-        </div>
 
-        <div class="bg-white p-8 rounded-2xl shadow-sm border border-green-100 flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-secondary">Olá, <span id="welcome-name" class="text-primary">Paciente</span>!</h2>
-                <p class="text-gray-500 mt-1">Este é seu painel seguro. Clique na sua foto acima para editar seus dados.</p>
-            </div>
-            <div class="hidden md:block bg-green-50 p-4 rounded-full">
-                <i data-lucide="smile" class="w-8 h-8 text-primary"></i>
-            </div>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="bg-secondary text-white p-6 rounded-2xl shadow-lg relative overflow-hidden group col-span-2">
-                <div class="relative z-10">
-                    <div class="flex items-center gap-2 mb-4">
-                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                        <span class="text-xs font-bold uppercase tracking-wider text-green-300">Próxima Sessão</span>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-6">Terapia Online</h3>
-                    <button class="bg-primary hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold transition flex items-center gap-2">
-                        <i data-lucide="video" class="w-5 h-5"></i> Entrar na Sala
-                    </button>
-                </div>
-                <div class="absolute right-0 bottom-0 opacity-10 transform translate-x-4 translate-y-4">
-                    <i data-lucide="flower-2" class="w-32 h-32"></i>
+                <h3 class="font-bold text-lg text-secondary mb-4 flex items-center gap-2"><i data-lucide="wrench" class="w-5 h-5 text-primary"></i> Ferramentas</h3>
+                <div class="grid md:grid-cols-4 gap-4">
+                    <a href="#" class="bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition hover:-translate-y-1 group">
+                        <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center mb-3 group-hover:bg-purple-600 group-hover:text-white transition"><i data-lucide="book-open" class="w-5 h-5"></i></div>
+                        <h4 class="font-bold text-gray-800 text-sm">Diário</h4>
+                    </a>
+                    <a href="#" class="bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition hover:-translate-y-1 group">
+                        <div class="w-10 h-10 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center mb-3 group-hover:bg-orange-600 group-hover:text-white transition"><i data-lucide="wind" class="w-5 h-5"></i></div>
+                        <h4 class="font-bold text-gray-800 text-sm">Respiração</h4>
+                    </a>
+                    <a href="#" class="bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition hover:-translate-y-1 group">
+                        <div class="w-10 h-10 bg-pink-50 text-pink-600 rounded-lg flex items-center justify-center mb-3 group-hover:bg-pink-600 group-hover:text-white transition"><i data-lucide="heart-handshake" class="w-5 h-5"></i></div>
+                        <h4 class="font-bold text-gray-800 text-sm">SOS Ansiedade</h4>
+                    </a>
+                    <a href="#" class="bg-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition hover:-translate-y-1 group">
+                        <div class="w-10 h-10 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center mb-3 group-hover:bg-gray-800 group-hover:text-white transition"><i data-lucide="plus" class="w-5 h-5"></i></div>
+                        <h4 class="font-bold text-gray-800 text-sm">Anotação</h4>
+                    </a>
                 </div>
             </div>
-
-            <div class="bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-md transition">
-                <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mb-4">
-                    <i data-lucide="book-open" class="w-5 h-5"></i>
-                </div>
-                <h4 class="font-bold text-gray-800">Diário de Emoções</h4>
-                <p class="text-sm text-gray-500 mt-2">Registre como você se sente hoje.</p>
-            </div>
-        </div>
-
-    </main>
+        </main>
+    </div>
 
     <script>
         lucide.createIcons();
@@ -127,102 +112,30 @@
         const SB_KEY = 'sb_publishable_yEvcZWITTevvnElw6wwdRg_usqiJNwW';
         const supabase = window.supabase.createClient(SB_URL, SB_KEY);
 
-        // --- 1. CARREGAMENTO INTELIGENTE (Prioridade Local) ---
-        async function carregarUsuario() {
-            // Tenta pegar do Cache Local (Instantâneo)
-            const localUser = JSON.parse(localStorage.getItem('usuario_cache'));
+        // 1. CARREGAR PERFIL (Lê do LocalStorage para ser rápido)
+        function carregarDisplay() {
+            // Tenta pegar da URL (se veio do login agora)
+            const params = new URLSearchParams(window.location.search);
+            const emailUrl = params.get('u');
             
-            if (localUser) {
-                atualizarTela(localUser.nome, localUser.avatar, localUser.email);
-            }
-
-            // Busca no Supabase para garantir (Background)
-            const { data: { session } } = await supabase.auth.getSession();
+            // Tenta pegar do cache (se já editou perfil)
+            const cached = JSON.parse(localStorage.getItem('user_data') || '{}');
             
-            if (session) {
-                const meta = session.user.user_metadata || {};
-                const nomeReal = meta.full_name || session.user.email.split('@')[0];
-                const avatarReal = meta.avatar_url || "";
-                
-                // Salva no cache
-                localStorage.setItem('usuario_cache', JSON.stringify({
-                    nome: nomeReal,
-                    avatar: avatarReal,
-                    email: session.user.email
-                }));
+            // Prioridade: Cache > URL > Padrão
+            const nomeFinal = cached.nome || (emailUrl ? emailUrl.split('@')[0] : 'Visitante');
+            const avatarFinal = cached.avatar || `https://ui-avatars.com/api/?name=${nomeFinal}&background=4CAF4F&color=fff`;
 
-                atualizarTela(nomeReal, avatarReal, session.user.email);
-            } else if (!localUser) {
-                // Se não tem nada em lugar nenhum
-                document.getElementById('display-name').innerText = "Visitante";
-            }
+            document.getElementById('user-name').innerText = nomeFinal;
+            document.getElementById('user-avatar').src = avatarFinal;
         }
+        carregarDisplay();
 
-        function atualizarTela(nome, avatar, email) {
-            document.getElementById('display-name').innerText = nome;
-            document.getElementById('welcome-name').innerText = nome;
-            
-            // Avatar
-            const imgEl = document.getElementById('display-avatar');
-            if (avatar && avatar.length > 5) {
-                imgEl.src = avatar;
-            } else {
-                imgEl.src = `https://ui-avatars.com/api/?name=${nome}&background=4CAF4F&color=fff`;
-            }
-
-            // Preenche modal
-            document.getElementById('input-name').value = nome;
-            document.getElementById('input-avatar').value = avatar || "";
-        }
-
-        carregarUsuario();
-
-        // --- 2. SISTEMA DE PERFIL (Salva no Supabase + Cache) ---
-        const modal = document.getElementById('profile-modal');
-
-        window.abrirModal = () => modal.classList.remove('hidden-modal');
-        window.fecharModal = () => modal.classList.add('hidden-modal');
-
-        window.salvarPerfil = async () => {
-            const novoNome = document.getElementById('input-name').value;
-            const novaFoto = document.getElementById('input-avatar').value;
-            const btn = document.querySelector('button[onclick="salvarPerfil()"]');
-
-            btn.innerText = "Salvando...";
-            
-            // 1. Atualiza Visualmente AGORA (Sem esperar)
-            atualizarTela(novoNome, novaFoto);
-            
-            // 2. Salva Cache Local
-            localStorage.setItem('usuario_cache', JSON.stringify({
-                nome: novoNome, avatar: novaFoto
-            }));
-
-            // 3. Salva no Banco (Supabase)
-            await supabase.auth.updateUser({
-                data: { full_name: novoNome, avatar_url: novaFoto }
-            });
-
-            btn.innerText = "Salvo!";
-            setTimeout(() => {
-                btn.innerText = "Salvar Alterações";
-                fecharModal();
-            }, 1000);
-        };
-
-        // --- 3. LOGOUT NUCLEAR (Sem frescura) ---
-        document.getElementById('btn-logout').addEventListener('click', () => {
-            // Limpa TUDO do navegador
-            localStorage.clear();
-            sessionStorage.clear();
-            
-            // Tenta avisar o servidor (fogo e esquece)
-            supabase.auth.signOut(); 
-
-            // Redireciona na marra
+        // 2. LOGOUT FUNCIONAL
+        document.getElementById('sidebar-logout').addEventListener('click', () => {
+            localStorage.clear(); // Limpa tudo
+            try { supabase.auth.signOut(); } catch(e){}
             window.location.href = 'area-paciente.html';
         });
-
     </script>
 </body>
 </html>
