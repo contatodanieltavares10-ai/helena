@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil | Dra. Elena Silva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#4CAF4F', secondary: '#263238' }, fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+        }
+    </script>
+    <style> body { background-color: #F8FAFC; } </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4">
+
+    <div class="bg-white w-full max-w-lg p-8 rounded-2xl shadow-xl border border-gray-100">
+        
+        <div class="flex items-center justify-between mb-8 border-b border-gray-100 pb-4">
+            <h2 class="text-2xl font-bold text-secondary">Editar Perfil</h2>
+            <a href="dashboard.html" class="text-gray-400 hover:text-primary transition flex items-center gap-1 text-sm font-medium">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar
+            </a>
+        </div>
+
+        <div class="space-y-6">
+            
+            <div class="flex justify-center mb-6">
+                <div class="relative group">
+                    <img id="preview-img" src="" class="w-24 h-24 rounded-full object-cover border-4 border-gray-50 shadow-md">
+                    <div class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full border-2 border-white">
+                        <i data-lucide="camera" class="w-4 h-4"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">Nome Completo</label>
+                <input type="text" id="input-nome" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none transition" placeholder="Como quer ser chamado?">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">Link da Foto (URL)</label>
+                <input type="text" id="input-avatar" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none transition" placeholder="https://exemplo.com/foto.jpg">
+                <p class="text-xs text-gray-400 mt-2">Dica: Copie o endereço de uma imagem do seu Instagram ou LinkedIn.</p>
+            </div>
+
+            <div class="pt-4 flex gap-3">
+                <a href="dashboard.html" class="w-1/3 py-3 text-center text-gray-500 font-bold hover:bg-gray-50 rounded-xl transition">Cancelar</a>
+                <button onclick="salvar()" id="btn-save" class="w-2/3 bg-primary text-white py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-lg shadow-green-200">
+                    Salvar Alterações
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+        const SB_URL = 'https://qpgtvcjcpucqwobmfozv.supabase.co';
+        const SB_KEY = 'sb_publishable_yEvcZWITTevvnElw6wwdRg_usqiJNwW';
+        const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+
+        // 1. CARREGAR DADOS ATUAIS
+        async function init() {
+            // Tenta pegar do cache local primeiro
+            const cached = JSON.parse(localStorage.getItem('user_data') || '{}');
+            
+            const nomeEl = document.getElementById('input-nome');
+            const avatarEl = document.getElementById('input-avatar');
+            const previewEl = document.getElementById('preview-img');
+
+            if (cached.nome) {
+                nomeEl.value = cached.nome;
+                avatarEl.value = cached.avatar || '';
+                previewEl.src = cached.avatar || `https://ui-avatars.com/api/?name=${cached.nome}`;
+            } else {
+                // Se não tem cache, tenta Supabase
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    const meta = session.user.user_metadata || {};
+                    nomeEl.value = meta.full_name || '';
+                    avatarEl.value = meta.avatar_url || '';
+                    previewEl.src = meta.avatar_url || `https://ui-avatars.com/api/?name=${session.user.email}`;
+                }
+            }
+
+            // Atualiza preview ao digitar link
+            avatarEl.addEventListener('input', (e) => {
+                if(e.target.value.length > 5) previewEl.src = e.target.value;
+            });
+        }
+        init();
+
+        // 2. SALVAR DADOS
+        async function salvar() {
+            const nome = document.getElementById('input-nome').value;
+            const avatar = document.getElementById('input-avatar').value;
+            const btn = document.getElementById('btn-save');
+
+            if (!nome) return alert("Digite um nome.");
+
+            btn.innerText = "Salvando...";
+            btn.disabled = true;
+
+            // A. Salva no Supabase (Persistência real)
+            await supabase.auth.updateUser({
+                data: { full_name: nome, avatar_url: avatar }
+            });
+
+            // B. Salva no LocalStorage (Para o dashboard ler rápido)
+            localStorage.setItem('user_data', JSON.stringify({
+                nome: nome,
+                avatar: avatar
+            }));
+
+            btn.innerText = "Sucesso!";
+            
+            // C. Volta para o dashboard
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 800);
+        }
+    </script>
+</body>
+</html>
