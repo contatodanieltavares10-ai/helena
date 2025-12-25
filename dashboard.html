@@ -21,8 +21,8 @@
             <a href="perfil.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg font-bold"><i data-lucide="user"></i> Editar Perfil</a>
         </nav>
         <div class="p-4">
-            <button onclick="forcarSaida()" class="w-full flex gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-lg font-bold">
-                <i data-lucide="log-out"></i> Sair Agora
+            <button onclick="sair()" class="w-full flex gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-lg font-bold border border-red-100 cursor-pointer">
+                <i data-lucide="log-out"></i> SAIR AGORA
             </button>
         </div>
     </aside>
@@ -31,12 +31,12 @@
         <header class="bg-white h-20 border-b flex items-center justify-between px-8">
             <h1 class="text-xl font-bold text-gray-700">Meu Painel</h1>
             
-            <a href="perfil.html" class="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition">
+            <a href="perfil.html" class="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition cursor-pointer">
                 <div class="text-right">
                     <p class="text-xs text-gray-400 font-bold">BEM-VINDO</p>
-                    <p id="nome-topo" class="text-sm font-bold text-gray-800">Carregando...</p>
+                    <p id="nome-topo" class="text-sm font-bold text-gray-800">Visitante</p>
                 </div>
-                <img id="foto-topo" src="" class="w-10 h-10 rounded-full bg-gray-200 object-cover border">
+                <img id="foto-topo" src="https://via.placeholder.com/150" class="w-10 h-10 rounded-full bg-gray-200 object-cover border">
             </a>
         </header>
 
@@ -58,60 +58,46 @@
             'sb_publishable_yEvcZWITTevvnElw6wwdRg_usqiJNwW'
         );
 
-        // 1. CARREGAR PERFIL (Executa imediatamente)
-        (function carregar() {
-            // Tenta ler do cache (rápido)
-            try {
-                const cache = JSON.parse(localStorage.getItem('user_data') || '{}');
-                const nomeEl = document.getElementById('nome-topo');
-                const imgEl = document.getElementById('foto-topo');
-
-                // Se tem cache, usa ele
-                if (cache.nome) {
-                    nomeEl.innerText = cache.nome;
-                    imgEl.src = cache.avatar || "https://ui-avatars.com/api/?background=random";
-                } 
-                
-                // Se veio da URL (login recente)
-                const params = new URLSearchParams(window.location.search);
-                const emailUrl = params.get('u');
-                if (!cache.nome && emailUrl) {
-                    nomeEl.innerText = emailUrl.split('@')[0];
-                }
-
-                // Atualiza em segundo plano com o banco
-                supabase.auth.getSession().then(({ data }) => {
-                    if (data?.session?.user?.user_metadata) {
-                        const meta = data.session.user.user_metadata;
-                        if(meta.full_name) {
-                            nomeEl.innerText = meta.full_name;
-                            localStorage.setItem('user_data', JSON.stringify({
-                                nome: meta.full_name,
-                                avatar: meta.avatar_url || imgEl.src
-                            }));
-                        }
-                        if(meta.avatar_url) imgEl.src = meta.avatar_url;
-                    }
-                });
-
-            } catch (e) {
-                console.log("Erro ao carregar perfil", e);
-            }
-        })();
-
-        // 2. FUNÇÃO SAIR (Global)
-        window.forcarSaida = async function() {
-            document.body.innerHTML = "<h1 style='text-align:center; margin-top:20%; font-family:sans-serif;'>Saindo...</h1>";
+        // 1. CARREGAR (Lê memória local primeiro)
+        function carregar() {
+            // Leitura instantânea
+            const cache = JSON.parse(localStorage.getItem('user_data') || '{}');
             
+            const nomeEl = document.getElementById('nome-topo');
+            const fotoEl = document.getElementById('foto-topo');
+
+            if (cache.nome) nomeEl.innerText = cache.nome;
+            if (cache.avatar) fotoEl.src = cache.avatar;
+
+            // Tenta atualizar do banco sem travar
+            supabase.auth.getSession().then(({ data }) => {
+                if (data?.session?.user?.user_metadata) {
+                    const meta = data.session.user.user_metadata;
+                    if(meta.full_name) {
+                        nomeEl.innerText = meta.full_name;
+                        // Atualiza cache
+                        localStorage.setItem('user_data', JSON.stringify({
+                            nome: meta.full_name,
+                            avatar: meta.avatar_url || cache.avatar
+                        }));
+                    }
+                    if(meta.avatar_url) fotoEl.src = meta.avatar_url;
+                }
+            });
+        }
+        carregar();
+
+        // 2. FUNÇÃO SAIR (Sem esperar o Supabase)
+        window.sair = function() {
             // Limpa tudo
             localStorage.clear();
             sessionStorage.clear();
             
-            // Tenta avisar o servidor
-            try { await supabase.auth.signOut(); } catch(e) {}
-
-            // Redireciona
-            setTimeout(() => window.location.href = 'area-paciente.html', 500);
+            // Redireciona NA HORA
+            window.location.replace('area-paciente.html');
+            
+            // Manda o sinal pro servidor em segundo plano (se der erro, azar)
+            supabase.auth.signOut(); 
         }
     </script>
 </body>
