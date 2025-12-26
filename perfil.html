@@ -2,129 +2,99 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Perfil</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>body { background-color: #F8FAFC; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen flex items-center justify-center px-4">
-
-    <div class="bg-white w-full max-w-lg p-8 rounded-2xl shadow-xl border border-gray-100">
-        
-        <div class="flex items-center justify-between mb-8 border-b border-gray-100 pb-4">
-            <h2 class="text-2xl font-bold text-gray-800">Seu Perfil</h2>
-            <a href="dashboard.html" class="text-gray-400 hover:text-green-600 transition flex items-center gap-1 text-sm font-bold">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar
-            </a>
+<body class="min-h-screen flex items-center justify-center bg-gray-50 px-4 font-sans">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Editar Perfil</h2>
+            <a href="dashboard.html" class="font-bold text-gray-400 hover:text-green-600">Voltar</a>
         </div>
 
         <div class="space-y-6">
-            <div class="flex flex-col items-center mb-6">
-                <div class="relative group cursor-pointer" onclick="document.getElementById('file-upload').click()">
-                    <img id="preview-img" src="https://via.placeholder.com/150" class="w-32 h-32 rounded-full object-cover border-4 border-gray-50 shadow-md">
-                    <div class="absolute bottom-0 right-0 bg-green-500 text-white p-2 rounded-full border-2 border-white shadow-sm">
-                        <i data-lucide="camera" class="w-5 h-5"></i>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-400 mt-3 font-medium">Toque para alterar a foto</p>
-                <input type="file" id="file-upload" accept="image/*" class="hidden" onchange="mostrarPreview(this)">
+            <div class="flex flex-col items-center">
+                <img id="preview-img" src="https://via.placeholder.com/150" class="w-32 h-32 rounded-full object-cover border-4 border-gray-100 mb-4 cursor-pointer" onclick="document.getElementById('file-upload').click()">
+                <input type="file" id="file-upload" class="hidden" accept="image/*" onchange="previewFile(this)">
+                <p class="text-xs text-gray-400">Clique na foto para alterar</p>
             </div>
-
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-2">Nome Completo</label>
-                <input type="text" id="input-nome" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none font-medium">
+                <label class="block text-sm font-bold mb-2">Nome Completo</label>
+                <input type="text" id="input-nome" class="w-full p-3 border rounded-lg font-bold">
             </div>
-
-            <button onclick="salvar()" id="btn-save" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition shadow-lg shadow-green-200">
-                Salvar Alterações
-            </button>
+            <button onclick="salvar()" id="btn-save" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700">Salvar Alterações</button>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
-        
-        const SB_URL = 'https://qpgtvcjcpucqwobmfozv.supabase.co';
-        const SB_KEY = 'sb_publishable_yEvcZWITTevvnElw6wwdRg_usqiJNwW';
-        const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+        const supabase = window.supabase.createClient('https://qpgtvcjcpucqwobmfozv.supabase.co', 'sb_publishable_yEvcZWITTevvnElw6wwdRg_usqiJNwW');
+        let arquivoParaEnviar = null;
 
-        let arquivo = null;
-
-        // 1. CARREGAR (Lê cache)
-        (function init() {
-            const cache = JSON.parse(localStorage.getItem('user_data') || '{}');
-            if(cache.nome) document.getElementById('input-nome').value = cache.nome;
-            if(cache.avatar) document.getElementById('preview-img').src = cache.avatar;
+        // Carregar dados (Lógica do GPT: getUser + metadata)
+        (async () => {
+            const { data } = await supabase.auth.getUser();
+            if (data?.user?.user_metadata) {
+                const meta = data.user.user_metadata;
+                document.getElementById('input-nome').value = meta.full_name || '';
+                document.getElementById('preview-img').src = meta.avatar_url || 'https://via.placeholder.com/150';
+            }
         })();
 
-        // 2. PREVIEW (Mostra foto antes de enviar)
-        window.mostrarPreview = function(input) {
+        function previewFile(input) {
             if (input.files && input.files[0]) {
-                arquivo = input.files[0];
+                arquivoParaEnviar = input.files[0];
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('preview-img').src = e.target.result;
-                }
+                reader.onload = (e) => document.getElementById('preview-img').src = e.target.result;
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // 3. SALVAR TUDO
-        window.salvar = async function() {
+        async function salvar() {
             const btn = document.getElementById('btn-save');
             const nome = document.getElementById('input-nome').value;
-
-            if(!nome) return alert("Digite seu nome!");
-
-            btn.disabled = true;
             btn.innerText = "Salvando...";
+            btn.disabled = true;
 
             try {
-                let finalUrl = document.getElementById('preview-img').src;
+                // --- CÓDIGO DO GPT: PEGAR SESSION ID E MONTAR CAMINHO ---
+                const { data: sessionData } = await supabase.auth.getSession();
+                
+                let publicUrl = document.getElementById('preview-img').src;
 
-                // A. UPLOAD (Se tiver arquivo novo)
-                if (arquivo) {
-                    const nomeArq = 'foto_' + Date.now();
-                    
-                    // Envia para o bucket 'avatars'
+                if (arquivoParaEnviar && sessionData.session) {
+                    const userId = sessionData.session.user.id;
+                    const nomeArquivo = `${userId}/avatar.jpg`; // Caminho exato solicitado
+
+                    // Upload com upsert (GPT)
                     const { error } = await supabase.storage
                         .from('avatars')
-                        .upload(nomeArq, arquivo);
+                        .upload(nomeArquivo, arquivoParaEnviar, { upsert: true });
 
-                    if (error) throw error; // Se der erro, avisa
+                    if (error) throw error;
 
-                    // Pega o link público
-                    const { data } = supabase.storage
-                        .from('avatars')
-                        .getPublicUrl(nomeArq);
-                    
-                    finalUrl = data.publicUrl;
+                    // Pega URL pública (com timestamp para forçar atualização visual)
+                    const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(nomeArquivo);
+                    publicUrl = urlData.publicUrl + '?t=' + new Date().getTime();
                 }
 
-                // B. ATUALIZA USUÁRIO
-                const { error: errUpdate } = await supabase.auth.updateUser({
-                    data: { full_name: nome, avatar_url: finalUrl }
+                // Atualiza Metadados (GPT)
+                const { error: updateError } = await supabase.auth.updateUser({
+                    data: { full_name: nome, avatar_url: publicUrl }
                 });
 
-                if (errUpdate) throw errUpdate;
+                if (updateError) throw updateError;
 
-                // C. ATUALIZA CACHE LOCAL
-                localStorage.setItem('user_data', JSON.stringify({
-                    nome: nome,
-                    avatar: finalUrl
-                }));
+                alert("Salvo com sucesso!");
+                window.location.href = 'dashboard.html';
 
-                btn.innerText = "Salvo!";
-                setTimeout(() => window.location.href = 'dashboard.html', 800);
-
-            } catch (e) {
-                console.error(e);
-                alert("Erro ao salvar: " + e.message);
+            } catch (error) {
+                alert("Erro: " + error.message);
                 btn.disabled = false;
-                btn.innerText = "Tentar Novamente";
+                btn.innerText = "Salvar";
             }
         }
     </script>
