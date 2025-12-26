@@ -2,102 +2,63 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Paciente</title>
+    <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>body { background-color: #F8FAFC; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body class="flex h-screen bg-gray-50">
-
+<body class="flex h-screen bg-gray-50 font-sans">
     <aside class="w-64 bg-white border-r hidden md:flex flex-col">
-        <div class="p-6 font-bold text-xl text-green-600 flex gap-2 items-center">
-            <i data-lucide="flower-2"></i> Dra. Elena
-        </div>
+        <div class="p-6 font-bold text-xl text-green-600 flex gap-2 items-center"><i data-lucide="flower-2"></i> Dra. Elena</div>
         <nav class="flex-1 p-4 space-y-2">
             <a href="#" class="flex gap-3 px-4 py-3 bg-green-50 text-green-700 rounded-lg font-bold"><i data-lucide="home"></i> Início</a>
-            <a href="perfil.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg font-bold"><i data-lucide="user"></i> Editar Perfil</a>
+            <a href="perfil.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 font-bold"><i data-lucide="user"></i> Perfil</a>
         </nav>
         <div class="p-4">
-            <button onclick="sair()" class="w-full flex gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-lg font-bold border border-red-100 cursor-pointer">
-                <i data-lucide="log-out"></i> SAIR AGORA
-            </button>
+            <button onclick="sairNaMarra()" class="w-full flex gap-3 px-4 py-3 text-red-500 border border-red-100 rounded-lg font-bold"><i data-lucide="log-out"></i> SAIR</button>
         </div>
     </aside>
 
-    <div class="flex-1 flex flex-col">
-        <header class="bg-white h-20 border-b flex items-center justify-between px-8">
-            <h1 class="text-xl font-bold text-gray-700">Meu Painel</h1>
-            
-            <a href="perfil.html" class="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition cursor-pointer">
-                <div class="text-right">
-                    <p class="text-xs text-gray-400 font-bold">BEM-VINDO</p>
-                    <p id="nome-topo" class="text-sm font-bold text-gray-800">Visitante</p>
-                </div>
-                <img id="foto-topo" src="https://via.placeholder.com/150" class="w-10 h-10 rounded-full bg-gray-200 object-cover border">
-            </a>
-        </header>
-
-        <main class="p-8">
-            <div class="bg-green-600 text-white p-8 rounded-2xl shadow-lg mb-8">
-                <h2 class="text-2xl font-bold mb-2">Sua Próxima Sessão</h2>
-                <p class="opacity-90 mb-6">Acesse a sala de espera virtual.</p>
-                <button class="bg-white text-green-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition">
-                    Entrar na Sala
-                </button>
+    <div class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold">Visão Geral</h1>
+            <div class="text-right">
+                <p class="text-xs text-gray-400 font-bold">OLÁ</p>
+                <p id="user-name" class="font-bold">Carregando...</p>
             </div>
-        </main>
+        </header>
+        <div class="bg-green-600 text-white p-8 rounded-2xl shadow-lg">
+            <h2 class="text-2xl font-bold mb-2">Sessão Online</h2>
+            <button class="bg-white text-green-700 px-6 py-3 rounded-lg font-bold mt-4">Acessar</button>
+        </div>
     </div>
 
     <script>
         lucide.createIcons();
-        const supabase = window.supabase.createClient(
-            'https://qpgtvcjcpucqwobmfozv.supabase.co', 
-            'sb_publishable_yEvcZWITTevvnElw6wwdRg_usqiJNwW'
-        );
+        const supabase = window.supabase.createClient('https://qpgtvcjcpucqwobmfozv.supabase.co', 'sb_publishable_yEvcZWITTevvnElw6wwdRg_usqiJNwW');
 
-        // 1. CARREGAR (Lê memória local primeiro)
-        function carregar() {
-            // Leitura instantânea
-            const cache = JSON.parse(localStorage.getItem('user_data') || '{}');
-            
-            const nomeEl = document.getElementById('nome-topo');
-            const fotoEl = document.getElementById('foto-topo');
+        // --- CÓDIGO DO GPT: CHECAGEM DE SESSÃO ---
+        (async () => {
+            const { data } = await supabase.auth.getSession();
+            if (!data.session) {
+                window.location.href = 'area-paciente.html';
+                return;
+            }
+            // Carrega nome
+            const { data: userData } = await supabase.auth.getUser();
+            const meta = userData.user.user_metadata;
+            if (meta && meta.full_name) {
+                document.getElementById('user-name').innerText = meta.full_name;
+            }
+        })();
 
-            if (cache.nome) nomeEl.innerText = cache.nome;
-            if (cache.avatar) fotoEl.src = cache.avatar;
-
-            // Tenta atualizar do banco sem travar
-            supabase.auth.getSession().then(({ data }) => {
-                if (data?.session?.user?.user_metadata) {
-                    const meta = data.session.user.user_metadata;
-                    if(meta.full_name) {
-                        nomeEl.innerText = meta.full_name;
-                        // Atualiza cache
-                        localStorage.setItem('user_data', JSON.stringify({
-                            nome: meta.full_name,
-                            avatar: meta.avatar_url || cache.avatar
-                        }));
-                    }
-                    if(meta.avatar_url) fotoEl.src = meta.avatar_url;
-                }
-            });
-        }
-        carregar();
-
-        // 2. FUNÇÃO SAIR (Sem esperar o Supabase)
-        window.sair = function() {
-            // Limpa tudo
+        // --- CÓDIGO DO GPT: SAIR NA MARRA ---
+        window.sairNaMarra = async function() {
+            await supabase.auth.signOut(); // PRIMEIRO
             localStorage.clear();
             sessionStorage.clear();
-            
-            // Redireciona NA HORA
-            window.location.replace('area-paciente.html');
-            
-            // Manda o sinal pro servidor em segundo plano (se der erro, azar)
-            supabase.auth.signOut(); 
+            window.location.href = 'area-paciente.html'; // POR ÚLTIMO
         }
     </script>
 </body>
